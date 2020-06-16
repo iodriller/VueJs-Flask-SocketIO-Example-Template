@@ -35,7 +35,7 @@ Go to the directory of the client. Run below commands in a separate command line
 1. https://github.com/bioudi/Flask-VueJs-SocketIO
 
 # Notes
-I included the docker files as well. It is encouraged to use the docker files while developing and deploying. Please see further details [here]([https://www.docker.com/](https://www.docker.com/)).
+I included the docker files as well. It is encouraged to use the docker files while developing and deploying. Please see further details [here](https://www.docker.com/).
 
 I didn't implement any database or any other components. As is, it is in a very simple form, might consider improving in future.
 
