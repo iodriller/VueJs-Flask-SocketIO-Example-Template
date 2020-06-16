@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+    front:
+      image: website/front
+      build:
+        context: ./
+        dockerfile: front.dockerfile
+      command: npm run dev
+      volumes:
+        - ./client:/app
+      ports:
+        - "8080:8080"
+    web:
+      image: website/web
+      command: python manage.py runserver
+      environment:
+        - FLASK_APP=server.py
+        - FLASK_DEBUG=1
+      build:
+        context: ./
+        dockerfile: web.dockerfile
+      ports:
+        - "8050:8050"
+      volumes:
+        - ./:/app
+      restart: always
