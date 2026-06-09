@@ -1,0 +1,59 @@
+name: Cleanup stale branches
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete stale dependabot and feature branches
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branches = [
+              "dependabot/npm_and_yarn/client/json5-and-json5-and-vue/cli-service-2.2.3",
+              "dependabot/npm_and_yarn/client/express-4.18.2",
+              "dependabot/npm_and_yarn/client/qs-6.5.3",
+              "dependabot/npm_and_yarn/client/decode-uri-component-0.2.2",
+              "dependabot/npm_and_yarn/client/engine.io-and-socket.io-3.6.1",
+              "dependabot/npm_and_yarn/client/socket.io-parser-3.3.3",
+              "dependabot/npm_and_yarn/client/vuetify-2.6.10",
+              "dependabot/npm_and_yarn/client/terser-4.8.1",
+              "dependabot/npm_and_yarn/client/thenify-3.3.1",
+              "dependabot/npm_and_yarn/client/shell-quote-1.7.3",
+              "dependabot/npm_and_yarn/client/eventsource-1.1.1",
+              "dependabot/npm_and_yarn/client/async-2.6.4",
+              "dependabot/npm_and_yarn/client/minimist-1.2.6",
+              "dependabot/npm_and_yarn/client/url-parse-1.5.10",
+              "dependabot/npm_and_yarn/client/follow-redirects-1.14.8",
+              "dependabot/npm_and_yarn/client/ajv-6.12.6",
+              "dependabot/npm_and_yarn/client/shelljs-0.8.5",
+              "dependabot/npm_and_yarn/client/path-parse-1.0.7",
+              "dependabot/npm_and_yarn/client/postcss-7.0.36",
+              "dependabot/npm_and_yarn/client/dns-packet-1.3.4",
+              "dependabot/npm_and_yarn/client/browserslist-4.16.6",
+              "dependabot/npm_and_yarn/client/hosted-git-info-2.8.9",
+              "dependabot/npm_and_yarn/client/lodash-4.17.21",
+              "dependabot/pip/flask-cors-3.0.9",
+              "dependabot/npm_and_yarn/client/ssri-6.0.2",
+              "dependabot/npm_and_yarn/client/y18n-4.0.1",
+              "dependabot/npm_and_yarn/client/elliptic-6.5.4",
+              "dependabot/npm_and_yarn/client/highlight.js-9.18.5",
+              "claude/project-modernization-review-32grlq"
+            ];
+            for (const branch of branches) {
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `heads/${branch}`
+                });
+                console.log(`Deleted: ${branch}`);
+              } catch (e) {
+                console.log(`Skip ${branch}: ${e.message}`);
+              }
+            }
