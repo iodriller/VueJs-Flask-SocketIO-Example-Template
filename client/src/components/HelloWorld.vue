@@ -1,72 +1,97 @@
 <template>
-    <v-container>
-        <v-row
-                :align="alignment"
-                :justify="justify"
-                class="grey lighten-5">
-            <v-col cols="12" sm="6">
-                <v-btn variant="success" @click="sendMessage">Send message to server</v-btn>
-            </v-col>
-            <v-col cols="12" sm="6">
-                <v-text-field
-                        label=""
-                        v-model="item.name"
-                        single-line
-                        outlined
-                ></v-text-field>
-            </v-col>
-        </v-row>
-    </v-container>
+  <section class="card">
+    <p class="eyebrow">Vue + Flask-SocketIO</p>
+    <h1>WebSocket starter</h1>
+    <p class="status" aria-live="polite">{{ status }}</p>
+    <button type="button" @click="sendMessage">Send message to server</button>
+  </section>
 </template>
 
 <script>
-    const io = require('socket.io-client');
+import { io } from 'socket.io-client'
 
-    export default {
-        name: 'HelloWorld',
+const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:8050'
 
-        data() {
-            return {
-                alignment: 'center',
-                justify: 'center',
-                item:
-                    {
-                        name: "click button for server to send message",
-                    },
-            }
-        },
-        methods: {
-            sendMessage(e) {
-                var socket = io.connect('localhost:8050');
-
-                console.log(e)
-                socket.emit('SEND_MESSAGE', {
-                    msg: this.message
-                });
-                console.log('message sent to websocket server');
-            },
-        },
-
-        created: function () {
-            var socket = io.connect('localhost:8050');
-            setInterval(function () {
-                socket.emit('ping', {
-                    msg: this.message
-                });
-                console.log('is the session alive ?')
-            }, 10000);
-            socket.on('pong', function () {
-                console.log('session is alive')
-            })
-
-        },
-        mounted: function () {
-            let self = this
-            var socket = io.connect('localhost:8050');
-            socket.on('message_to_client', function (d) {
-                    self.item['name'] = d["data"]
-                }
-            )
-        }
+export default {
+  name: 'HelloWorld',
+  data() {
+    return {
+      socket: null,
+      heartbeat: null,
+      status: 'Connect to the server, then send a message.',
     }
+  },
+  mounted() {
+    this.socket = io(socketUrl)
+    this.socket.on('connect', () => {
+      this.status = 'Connected. Ready to send a message.'
+    })
+    this.socket.on('connect_error', () => {
+      this.status = 'Server unavailable. Start the Flask service on port 8050.'
+    })
+    this.socket.on('message_to_client', ({ data }) => {
+      this.status = data
+    })
+    this.socket.on('pong', () => {
+      this.status = 'Connection is alive.'
+    })
+    this.heartbeat = window.setInterval(() => this.socket?.emit('ping'), 10_000)
+  },
+  beforeUnmount() {
+    window.clearInterval(this.heartbeat)
+    this.socket?.disconnect()
+  },
+  methods: {
+    sendMessage() {
+      this.socket?.emit('SEND_MESSAGE', { message: 'Hello from Vue' })
+    },
+  },
+}
 </script>
+
+<style scoped>
+.card {
+  width: min(34rem, 100%);
+  padding: 2.5rem;
+  border: 1px solid #dce3ef;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 1.25rem 3rem rgb(31 49 82 / 10%);
+}
+
+.eyebrow {
+  margin: 0;
+  color: #3568d4;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0.6rem 0;
+  font-size: clamp(2rem, 7vw, 3rem);
+}
+
+.status {
+  min-height: 3rem;
+  color: #58657a;
+  line-height: 1.5;
+}
+
+button {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 0.65rem;
+  color: white;
+  background: #3568d4;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+button:hover {
+  background: #2857bb;
+}
+</style>

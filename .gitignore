@@ -1,4 +1,8 @@
 node_modules
+client/dist
 instance
+.pytest_cache
+.venv
+__pycache__
 README_old.md
 .idea
