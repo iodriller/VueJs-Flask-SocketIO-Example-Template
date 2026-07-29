@@ -1,6 +1,10 @@
-FROM node:20-slim
+FROM node:22-slim
 
-RUN npm install --quiet --global @vue/cli
-
-RUN mkdir /app
 WORKDIR /app
+
+COPY client/package*.json ./
+RUN npm ci
+
+COPY client/ ./
+
+CMD ["npm", "run", "dev"]

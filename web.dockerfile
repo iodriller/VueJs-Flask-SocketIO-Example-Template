@@ -1,14 +1,12 @@
 FROM python:3.12-slim
 
-RUN mkdir /app
 WORKDIR /app
 
-ADD requirements.txt ./
+COPY requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-ENV FLASK_DEBUG=1
+COPY manage.py ./
+COPY server/ ./server/
 
-ADD ./ ./
-
-CMD python manage.py
+CMD ["python", "manage.py"]
