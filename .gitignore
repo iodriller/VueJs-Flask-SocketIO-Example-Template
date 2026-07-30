@@ -6,3 +6,8 @@ instance
 __pycache__
 README_old.md
 .idea
+
+# Local assistant state
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
