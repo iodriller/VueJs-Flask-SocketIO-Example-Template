@@ -51,7 +51,7 @@ docker compose up --build
   environment-specific hosts.
 - Maintain Node compatibility documented in the README and the Python versions
   exercised by CI.
-- Dependabot updates should remain narrow: review release notes and lockfile
+- Dependency updates should remain narrow: review release notes and lockfile
   changes, run the affected checks, and avoid unrelated framework migrations.
 
 ## Verification

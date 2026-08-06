@@ -35,8 +35,8 @@ npm run build
 npm audit --omit=dev --audit-level=high
 ```
 
-GitHub Actions also builds both Dockerfiles. Dependabot keeps the Python,
-Node, and workflow dependencies current.
+GitHub Actions also builds both Dockerfiles. Dependency updates are reviewed
+manually and validated through the same audit and build checks.
 
 ## Containers
 
